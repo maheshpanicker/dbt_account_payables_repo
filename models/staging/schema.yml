@@ -1,0 +1,73 @@
+version: 2
+
+sources:
+  - name: ap_sap
+    description: "SAP ERP source tables for Accounts Payable analytics"
+    database: "{{ target.database }}"
+    schema: slv_data
+    tables:
+      - name: raw_bkpf
+        description: "Accounting Document Header"
+        columns:
+          - name: belnr
+            description: "Accounting Document Number"
+            tests:
+              - not_null
+          - name: gjahr
+            description: "Fiscal Year"
+            tests:
+              - not_null
+      
+      - name: raw_bseg
+        description: "Accounting Document Segment"
+        columns:
+          - name: belnr
+            tests:
+              - not_null
+      
+      - name: raw_ekpo
+        description: "Purchase Order Item"
+        columns:
+          - name: ebeln
+            tests:
+              - not_null
+          - name: ebelp
+            tests:
+              - not_null
+      
+      - name: raw_ekbe
+        description: "Purchase Order History"
+        columns:
+          - name: ebeln
+            tests:
+              - not_null
+          - name: vgabe
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['1', '2']
+
+models:
+  - name: stg_sap_po_items
+    description: "Staged Purchase Order line items"
+    columns:
+      - name: po_item_key
+        tests:
+          - unique
+          - not_null
+  
+  - name: stg_sap_gr_ir_history
+    description: "Staged Goods Receipt and Invoice Receipt history"
+    columns:
+      - name: gr_ir_key
+        tests:
+          - unique
+          - not_null
+  
+  - name: stg_sap_accounting_docs
+    description: "Staged accounting documents"
+    columns:
+      - name: accounting_doc_key
+        tests:
+          - unique
+          - not_null
