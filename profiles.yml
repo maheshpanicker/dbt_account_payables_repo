@@ -1,0 +1,32 @@
+# Snowflake connection profile for dbt
+# Place this file in ~/.dbt/profiles.yml (for local development)
+# or configure in your CI/CD environment
+
+ap_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"  # e.g., xy12345.us-east-1
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'TRANSFORMER') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'COMPUTE_WH') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'AP_ANALYTICS') }}"
+      schema: slv_data  # Default schema, models will override
+      threads: 4
+      client_session_keep_alive: False
+      query_tag: dbt_ap_analytics
+      
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'TRANSFORMER') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'COMPUTE_WH') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'AP_ANALYTICS_PROD') }}"
+      schema: slv_data
+      threads: 8
+      client_session_keep_alive: False
+      query_tag: dbt_ap_analytics_prod
